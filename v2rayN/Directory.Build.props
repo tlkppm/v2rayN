@@ -1,12 +1,12 @@
 <Project>
 
     <PropertyGroup>
-        <Version>7.16.5-tlkppm.1</Version>
+        <Version>7.16.5-tlkppm.2</Version>
         <VersionSuffix>Maintained</VersionSuffix>
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
         <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
         <NoWarn>CA1031;CS1591;NU1507;CA1416;IDE0058;IDE0053;IDE0200</NoWarn>
