@@ -11,6 +11,7 @@ public partial class MainWindow
     private static Config _config;
     private CheckUpdateView? _checkUpdateView;
     private BackupAndRestoreView? _backupAndRestoreView;
+    private CheckUpdateWindow? _checkUpdateWindow;
     private bool _autoUpdateTriggered = false;
 
     public MainWindow()
@@ -516,12 +517,16 @@ public partial class MainWindow
         if (_autoUpdateTriggered) return;
         _autoUpdateTriggered = true;
 
-        _checkUpdateView ??= new CheckUpdateView();
-        DialogHost.Show(_checkUpdateView, "RootDialog");
-        
-        if (_checkUpdateView.ViewModel != null)
+        if (_checkUpdateWindow == null || !_checkUpdateWindow.IsVisible)
         {
-            _checkUpdateView.ViewModel.CheckUpdateCmd.Execute().Subscribe();
+            _checkUpdateWindow = new CheckUpdateWindow();
+            _checkUpdateWindow.Closed += (s, e) => _checkUpdateWindow = null;
+            _checkUpdateWindow.Show();
+            _checkUpdateWindow.StartAutoUpdate();
+        }
+        else
+        {
+            _checkUpdateWindow.Activate();
         }
     }
 

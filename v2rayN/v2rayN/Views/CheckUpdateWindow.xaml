@@ -1,0 +1,114 @@
+<Window
+    x:Class="v2rayN.Views.CheckUpdateWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:resx="clr-namespace:ServiceLib.Resx;assembly=ServiceLib"
+    Title="检查更新"
+    Width="550"
+    Height="450"
+    Background="{DynamicResource MaterialDesignPaper}"
+    ResizeMode="NoResize"
+    Topmost="True"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="ToolWindow">
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="windowTaskbar" ProgressState="None" ProgressValue="0" />
+    </Window.TaskbarItemInfo>
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Margin="0,0,0,16"
+            FontSize="18"
+            FontWeight="Bold"
+            Text="组件更新" />
+
+        <ListView
+            x:Name="lstCheckUpdates"
+            Grid.Row="1"
+            BorderThickness="1"
+            ItemContainerStyle="{StaticResource lvItemSelected}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="4" Padding="8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ToggleButton
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                IsChecked="{Binding IsSelected}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontWeight="Bold"
+                                Text="{Binding CoreType}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                Text="{Binding Remarks}"
+                                TextWrapping="Wrap" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackPanel Grid.Row="2" Margin="0,16,0,8">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontWeight="Bold"
+                    Text="更新进度: " />
+                <TextBlock
+                    x:Name="txtProgressStatus"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource PrimaryHueMidBrush}" />
+            </StackPanel>
+            <ProgressBar
+                x:Name="progressBar"
+                Height="24"
+                Margin="0,8,0,0"
+                Maximum="100"
+                Minimum="0" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="3"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <TextBlock
+                Margin="8"
+                VerticalAlignment="Center"
+                Text="自动重启" />
+            <ToggleButton
+                x:Name="togEnableAutoRestart"
+                Margin="8"
+                HorizontalAlignment="Left" />
+            <Button
+                x:Name="btnCheckUpdateAll"
+                Width="100"
+                Margin="8"
+                Content="全部更新"
+                Style="{StaticResource MaterialDesignRaisedButton}" />
+            <Button
+                x:Name="btnClose"
+                Width="80"
+                Margin="8"
+                Content="关闭"
+                Style="{StaticResource MaterialDesignOutlinedButton}" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -9,6 +9,7 @@ public class CheckUpdateViewModel : MyReactiveObject
 
     public IObservableCollection<CheckUpdateModel> CheckUpdateModels { get; } = new ObservableCollectionExtended<CheckUpdateModel>();
     public ReactiveCommand<Unit, Unit> CheckUpdateCmd { get; }
+    public ReactiveCommand<Unit, Unit> CheckUpdateAllCmd { get; }
     [Reactive] public bool EnableCheckPreReleaseUpdate { get; set; }
     [Reactive] public bool EnableAutoRestart { get; set; }
     [Reactive] public int TotalProgress { get; set; }
@@ -23,6 +24,13 @@ public class CheckUpdateViewModel : MyReactiveObject
 
         CheckUpdateCmd = ReactiveCommand.CreateFromTask(CheckUpdate);
         CheckUpdateCmd.ThrownExceptions.Subscribe(ex =>
+        {
+            Logging.SaveLog(_tag, ex);
+            _ = UpdateView(_v2rayN, ex.Message);
+        });
+
+        CheckUpdateAllCmd = ReactiveCommand.CreateFromTask(CheckUpdateAll);
+        CheckUpdateAllCmd.ThrownExceptions.Subscribe(ex =>
         {
             Logging.SaveLog(_tag, ex);
             _ = UpdateView(_v2rayN, ex.Message);
@@ -90,6 +98,23 @@ public class CheckUpdateViewModel : MyReactiveObject
     private async Task CheckUpdate()
     {
         await Task.Run(CheckUpdateTask);
+    }
+
+    private async Task CheckUpdateAll()
+    {
+        foreach (var item in CheckUpdateModels)
+        {
+            item.IsSelected = true;
+        }
+        await Task.Run(CheckUpdateTask);
+    }
+
+    public void SelectAll()
+    {
+        foreach (var item in CheckUpdateModels)
+        {
+            item.IsSelected = true;
+        }
     }
 
     private async Task CheckUpdateTask()
