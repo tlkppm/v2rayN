@@ -13,6 +13,9 @@ public partial class CheckUpdateView
             this.OneWayBind(ViewModel, vm => vm.CheckUpdateModels, v => v.lstCheckUpdates.ItemsSource).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.EnableCheckPreReleaseUpdate, v => v.togEnableCheckPreReleaseUpdate.IsChecked).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.EnableAutoRestart, v => v.togEnableAutoRestart.IsChecked).DisposeWith(disposables);
+            this.OneWayBind(ViewModel, vm => vm.CurrentProgress, v => v.progressBar.Value).DisposeWith(disposables);
+            this.OneWayBind(ViewModel, vm => vm.ProgressStatus, v => v.txtProgressStatus.Text).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.CheckUpdateCmd, v => v.btnCheckUpdate).DisposeWith(disposables);
         });
     }

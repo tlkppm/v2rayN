@@ -1,0 +1,378 @@
+[
+  {
+    "remarks": "=== 终极隐身模式 v2.0 ===",
+    "outboundTag": "direct",
+    "domain": ["localhost"]
+  },
+  {
+    "remarks": "阻断QUIC/UDP443防WebRTC泄漏",
+    "outboundTag": "block",
+    "port": "443",
+    "network": "udp"
+  },
+  {
+    "remarks": "阻断所有IP检测服务",
+    "outboundTag": "block",
+    "domain": [
+      "domain:ip.sb",
+      "domain:ip-api.com",
+      "domain:ipinfo.io",
+      "domain:ipapi.co",
+      "domain:ip.cn",
+      "domain:ipip.net",
+      "domain:ip138.com",
+      "domain:myip.la",
+      "domain:whatismyip.com",
+      "domain:ipleak.net",
+      "domain:browserleaks.com",
+      "domain:whoer.net",
+      "domain:2ip.io",
+      "domain:dnsleaktest.com",
+      "domain:ipgeolocation.io",
+      "domain:ipstack.com",
+      "domain:ipdata.co",
+      "domain:abstractapi.com",
+      "domain:ip2location.com",
+      "domain:maxmind.com"
+    ]
+  },
+  {
+    "remarks": "===== 外国平台走代理(保持IP一致) =====",
+    "outboundTag": "proxy",
+    "domain": ["localhost-placeholder-foreign"]
+  },
+  {
+    "remarks": "Stripe支付全系(全球最大)",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:stripe.com",
+      "domain:stripe.network",
+      "domain:stripecdn.com",
+      "domain:stripeassets.com",
+      "domain:stripeidentity.com",
+      "domain:stripe.dev",
+      "domain:js.stripe.com",
+      "domain:checkout.stripe.com",
+      "domain:api.stripe.com",
+      "domain:m.stripe.com",
+      "domain:m.stripe.network",
+      "domain:q.stripe.com",
+      "domain:hooks.stripe.com",
+      "domain:files.stripe.com",
+      "domain:invoice.stripe.com",
+      "domain:pay.stripe.com",
+      "domain:terminal.stripe.com",
+      "domain:dashboard.stripe.com"
+    ]
+  },
+  {
+    "remarks": "PayPal支付",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:paypal.com",
+      "domain:paypalobjects.com",
+      "domain:paypal.me",
+      "domain:braintreegateway.com",
+      "domain:braintree-api.com",
+      "domain:venmo.com"
+    ]
+  },
+  {
+    "remarks": "Apple支付/服务",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:apple.com",
+      "domain:icloud.com",
+      "domain:apple-cloudkit.com",
+      "domain:mzstatic.com",
+      "domain:appstore.com"
+    ]
+  },
+  {
+    "remarks": "Google人机验证reCAPTCHA(必须走代理)",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:google.com",
+      "domain:gstatic.com",
+      "domain:recaptcha.net",
+      "domain:googleapis.com",
+      "domain:googleusercontent.com"
+    ]
+  },
+  {
+    "remarks": "hCaptcha人机验证",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:hcaptcha.com",
+      "domain:hmt.ai",
+      "domain:botstop.com"
+    ]
+  },
+  {
+    "remarks": "Cloudflare验证/CDN",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:cloudflare.com",
+      "domain:cloudflareinsights.com",
+      "domain:cloudflare-dns.com",
+      "domain:challenges.cloudflare.com",
+      "domain:turnstile.com"
+    ]
+  },
+  {
+    "remarks": "其他人机验证服务",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:arkoselabs.com",
+      "domain:funcaptcha.com",
+      "domain:perimeterx.net",
+      "domain:px-cdn.net",
+      "domain:datadome.co",
+      "domain:kasada.io",
+      "domain:shape.com",
+      "domain:akamai.com"
+    ]
+  },
+  {
+    "remarks": "反欺诈/风控服务(走代理保持一致)",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:sift.com",
+      "domain:siftscience.com",
+      "domain:forter.com",
+      "domain:riskified.com",
+      "domain:signifyd.com",
+      "domain:kount.com",
+      "domain:threatmetrix.com",
+      "domain:lexisnexis.com"
+    ]
+  },
+  {
+    "remarks": "设备指纹检测(走代理)",
+    "outboundTag": "proxy",
+    "domain": [
+      "domain:fingerprintjs.com",
+      "domain:fpjs.io",
+      "domain:deviceatlas.com",
+      "domain:device-id.com"
+    ]
+  },
+  {
+    "remarks": "支付宝全系",
+    "outboundTag": "direct",
+    "domain": [
+      "domain:alipay.com",
+      "domain:alipayobjects.com",
+      "domain:alipaydev.com",
+      "domain:alipaydns.com",
+      "domain:alipaylog.com",
+      "domain:aliyun.com",
+      "domain:antgroup.com",
+      "domain:antfin.com",
+      "domain:ant-finance.com",
+      "domain:mybank.cn",
+      "domain:mpaas.com",
+      "domain:alios.cn"
+    ]
+  },
+  {
+    "remarks": "微信/腾讯支付全系",
+    "outboundTag": "direct",
+    "domain": [
+      "domain:weixin.qq.com",
+      "domain:wechat.com",
+      "domain:wx.qq.com",
+      "domain:weixinbridge.com",
+      "domain:wxpay.wxutil.com",
+      "domain:tenpay.com",
+      "domain:qpay.qq.com",
+      "domain:weiyun.com",
+      "domain:pay.qq.com",
+      "domain:mch.weixin.qq.com",
+      "domain:payapp.weixin.qq.com",
+      "domain:szminorshort.weixin.qq.com"
+    ]
+  },
+  {
+    "remarks": "银联/银行卡",
+    "outboundTag": "direct",
+    "domain": [
+      "domain:unionpay.com",
+      "domain:95516.com",
+      "domain:unionpayintl.com",
+      "domain:cloudpnr.com",
+      "domain:chinapay.com",
+      "domain:cpcn.com.cn",
+      "domain:nucc.com",
+      "domain:epcc.cn"
+    ]
+  },
+  {
+    "remarks": "主要银行",
+    "outboundTag": "direct",
+    "domain": [
+      "domain:icbc.com.cn",
+      "domain:ccb.com",
+      "domain:ccb.com.cn",
+      "domain:boc.cn",
+      "domain:abchina.com",
+      "domain:bankcomm.com",
+      "domain:cmbchina.com",
+      "domain:cmbc.com.cn",
+      "domain:cib.com.cn",
+      "domain:spdb.com.cn",
+      "domain:pingan.com",
+      "domain:cgbchina.com.cn",
+      "domain:hxb.com.cn",
+      "domain:citicbank.com",
+      "domain:psbc.com",
+      "domain:czbank.com",
+      "domain:nbcb.com.cn",
+      "domain:njcb.com.cn",
+      "domain:bosc.cn"
+    ]
+  },
+  {
+    "remarks": "电商支付",
+    "outboundTag": "direct",
+    "domain": [
+      "domain:jd.com",
+      "domain:jdpay.com",
+      "domain:360buy.com",
+      "domain:taobao.com",
+      "domain:tmall.com",
+      "domain:1688.com",
+      "domain:pinduoduo.com",
+      "domain:yangkeduo.com",
+      "domain:meituan.com",
+      "domain:dianping.com",
+      "domain:ele.me",
+      "domain:ctrip.com",
+      "domain:trip.com",
+      "domain:fliggy.com",
+      "domain:suning.com",
+      "domain:vip.com",
+      "domain:xiaomi.com",
+      "domain:mi.com"
+    ]
+  },
+  {
+    "remarks": "金融/证券/基金",
+    "outboundTag": "direct",
+    "domain": [
+      "domain:eastmoney.com",
+      "domain:10jqka.com.cn",
+      "domain:hexun.com",
+      "domain:tianyancha.com",
+      "domain:qichacha.com",
+      "domain:creditchina.gov.cn",
+      "domain:pbccrc.org.cn",
+      "domain:csrc.gov.cn",
+      "domain:sse.com.cn",
+      "domain:szse.cn",
+      "domain:chinabond.com.cn",
+      "domain:tiantianfund.com",
+      "domain:howbuy.com",
+      "domain:fund123.cn"
+    ]
+  },
+  {
+    "remarks": "政府/公共服务",
+    "outboundTag": "direct",
+    "domain": [
+      "domain:gov.cn",
+      "domain:12306.cn",
+      "domain:12345.cn",
+      "domain:nhsa.gov.cn",
+      "domain:gjj.com.cn",
+      "domain:shgjj.com",
+      "domain:tax.sh.gov.cn",
+      "domain:chinatax.gov.cn"
+    ]
+  },
+  {
+    "remarks": "运营商/实名认证",
+    "outboundTag": "direct",
+    "domain": [
+      "domain:10010.com",
+      "domain:10086.cn",
+      "domain:189.cn",
+      "domain:chinamobile.com",
+      "domain:chinaunicom.com",
+      "domain:chinatelecom.com.cn",
+      "domain:ctexcel.com"
+    ]
+  },
+  {
+    "remarks": "安全SDK/风控",
+    "outboundTag": "direct",
+    "domain": [
+      "domain:amap.com",
+      "domain:autonavi.com",
+      "domain:alicdn.com",
+      "domain:mmstat.com",
+      "domain:tbcdn.cn",
+      "domain:gtimg.cn",
+      "domain:qq.com",
+      "domain:qlogo.cn",
+      "domain:qpic.cn",
+      "domain:sentry.io",
+      "domain:bugly.qq.com",
+      "domain:umeng.com",
+      "domain:umengcloud.com",
+      "domain:cnzz.com",
+      "domain:growingio.com",
+      "domain:sensors.com.cn",
+      "domain:tongdun.cn",
+      "domain:fraudmetrix.cn",
+      "domain:dingxiang-inc.com",
+      "domain:bigsec.com",
+      "domain:253.com"
+    ]
+  },
+  {
+    "remarks": "绕过局域网",
+    "outboundTag": "direct",
+    "ip": ["geoip:private"],
+    "domain": ["geosite:private"]
+  },
+  {
+    "remarks": "绕过中国公共DNS",
+    "outboundTag": "direct",
+    "ip": [
+      "223.5.5.5", "223.6.6.6",
+      "119.29.29.29", "1.12.12.12",
+      "180.76.76.76", "114.114.114.114"
+    ]
+  },
+  {
+    "remarks": "绕过中国IP",
+    "outboundTag": "direct",
+    "ip": ["geoip:cn"]
+  },
+  {
+    "remarks": "绕过中国域名",
+    "outboundTag": "direct",
+    "domain": ["geosite:cn"]
+  },
+  {
+    "remarks": "代理Google等",
+    "outboundTag": "proxy",
+    "domain": [
+      "geosite:google",
+      "geosite:github",
+      "geosite:telegram",
+      "geosite:twitter",
+      "geosite:facebook",
+      "geosite:instagram",
+      "geosite:youtube",
+      "geosite:netflix",
+      "geosite:openai"
+    ]
+  },
+  {
+    "remarks": "其他流量走代理",
+    "port": "0-65535",
+    "outboundTag": "proxy"
+  }
+]

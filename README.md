@@ -8,8 +8,10 @@ and [others](https://github.com/2dust/v2rayN/wiki/List-of-supported-cores)
 
 [![GitHub Releases](https://img.shields.io/github/downloads/tlkppm/v2rayN/latest/total?logo=github)](https://github.com/tlkppm/v2rayN/releases)
 
-## Maintenance Changes (v7.16.5-tlkppm.2)
+## Maintenance Changes (v7.16.5-tlkppm.3)
 
+- **New Feature**: Stealth Mode routing (bypasses payment/captcha detection)
+- **New Feature**: Update progress bar with auto-restart
 - **Framework**: Upgraded to .NET 9.0 (from .NET 8.0)
 - **Security**: Fixed SQL injection vulnerability in ProfileItems query
 - **Architecture**: Split ConfigHandler.cs into 6 partial classes for better maintainability

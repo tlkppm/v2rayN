@@ -212,7 +212,10 @@ public static partial class ConfigHandler
             items = await AppManager.Instance.RoutingItems();
         }
 
-        if (!blImportAdvancedRules && items.Count(u => u.Remarks.StartsWith(ver)) > 0)
+        var maxSort = items.Count;
+        var hasExistingRules = items.Count(u => u.Remarks.StartsWith(ver)) > 0;
+
+        if (hasExistingRules && !blImportAdvancedRules)
         {
             if (config.RoutingBasicItem.RoutingIndexId.IsNotEmpty())
             {
@@ -223,10 +226,19 @@ public static partial class ConfigHandler
                 }
                 config.RoutingBasicItem.RoutingIndexId = string.Empty;
             }
+
+            if (items.All(u => !u.Remarks.Contains("Stealth") && !u.Remarks.Contains("隐身")))
+            {
+                var itemStealth = new RoutingItem()
+                {
+                    Remarks = $"{ver}隐身模式(Stealth)",
+                    Url = string.Empty,
+                    Sort = maxSort + 4,
+                };
+                await AddBatchRoutingRules(itemStealth, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "stealth"));
+            }
             return 0;
         }
-
-        var maxSort = items.Count;
 
         var item2 = new RoutingItem()
         {
@@ -251,6 +263,14 @@ public static partial class ConfigHandler
             Sort = maxSort + 3,
         };
         await AddBatchRoutingRules(item1, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "global"));
+
+        var item4 = new RoutingItem()
+        {
+            Remarks = $"{ver}隐身模式(Stealth)",
+            Url = string.Empty,
+            Sort = maxSort + 4,
+        };
+        await AddBatchRoutingRules(item4, EmbedUtils.GetEmbedText(Global.CustomRoutingFileName + "stealth"));
 
         if (!blImportAdvancedRules)
         {

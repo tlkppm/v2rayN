@@ -10,6 +10,11 @@ public class CheckUpdateViewModel : MyReactiveObject
     public IObservableCollection<CheckUpdateModel> CheckUpdateModels { get; } = new ObservableCollectionExtended<CheckUpdateModel>();
     public ReactiveCommand<Unit, Unit> CheckUpdateCmd { get; }
     [Reactive] public bool EnableCheckPreReleaseUpdate { get; set; }
+    [Reactive] public bool EnableAutoRestart { get; set; }
+    [Reactive] public int TotalProgress { get; set; }
+    [Reactive] public int CurrentProgress { get; set; }
+    [Reactive] public string ProgressStatus { get; set; }
+    [Reactive] public bool IsUpdating { get; set; }
 
     public CheckUpdateViewModel(Func<EViewAction, object?, Task<bool>>? updateView)
     {
@@ -24,6 +29,11 @@ public class CheckUpdateViewModel : MyReactiveObject
         });
 
         EnableCheckPreReleaseUpdate = _config.CheckUpdateItem.CheckPreReleaseUpdate;
+        EnableAutoRestart = true;
+        ProgressStatus = "";
+        TotalProgress = 100;
+        CurrentProgress = 0;
+        IsUpdating = false;
 
         this.WhenAnyValue(
         x => x.EnableCheckPreReleaseUpdate,
@@ -89,6 +99,11 @@ public class CheckUpdateViewModel : MyReactiveObject
                 .Select(x => new CheckUpdateModel() { CoreType = x.CoreType }).ToList();
         await SaveSelectedCoreTypes();
 
+        IsUpdating = true;
+        CurrentProgress = 0;
+        var selectedCount = _lstUpdated.Count;
+        var completedCount = 0;
+
         for (var k = CheckUpdateModels.Count - 1; k >= 0; k--)
         {
             var item = CheckUpdateModels[k];
@@ -97,6 +112,7 @@ public class CheckUpdateViewModel : MyReactiveObject
                 continue;
             }
 
+            ProgressStatus = $"正在检查更新: {item.CoreType}";
             await UpdateView(item.CoreType, "...");
             if (item.CoreType == _geo)
             {
@@ -107,6 +123,8 @@ public class CheckUpdateViewModel : MyReactiveObject
                 if (Utils.IsPackagedInstall())
                 {
                     await UpdateView(_v2rayN, "Not Support");
+                    completedCount++;
+                    CurrentProgress = selectedCount > 0 ? (completedCount * 100 / selectedCount) : 0;
                     continue;
                 }
                 await CheckUpdateN(EnableCheckPreReleaseUpdate);
@@ -119,9 +137,14 @@ public class CheckUpdateViewModel : MyReactiveObject
             {
                 await CheckUpdateCore(item, false);
             }
+            completedCount++;
+            CurrentProgress = selectedCount > 0 ? (completedCount * 100 / selectedCount) : 0;
         }
 
+        ProgressStatus = "更新完成";
+        CurrentProgress = 100;
         await UpdateFinished();
+        IsUpdating = false;
     }
 
     private void UpdatedPlusPlus(string coreType, string fileName)
@@ -188,16 +211,50 @@ public class CheckUpdateViewModel : MyReactiveObject
     {
         if (_lstUpdated.Count > 0 && _lstUpdated.Count(x => x.IsFinished == true) == _lstUpdated.Count)
         {
+            ProgressStatus = "正在安装更新...";
             await UpdateFinishedSub(false);
             await Task.Delay(2000);
             await UpgradeCore();
 
             if (_lstUpdated.Any(x => x.CoreType == _v2rayN && x.IsFinished == true))
             {
+                ProgressStatus = "正在升级主程序...";
                 await Task.Delay(1000);
                 await UpgradeN();
             }
             await Task.Delay(1000);
+            
+            if (EnableAutoRestart && _lstUpdated.Any(x => x.IsFinished == true))
+            {
+                ProgressStatus = "更新完成，正在重启...";
+                await Task.Delay(2000);
+                await RestartApplication();
+            }
+            else
+            {
+                await UpdateFinishedSub(true);
+            }
+        }
+    }
+
+    private async Task RestartApplication()
+    {
+        try
+        {
+            var exePath = Environment.ProcessPath;
+            if (exePath.IsNullOrEmpty())
+            {
+                exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+            }
+            if (exePath.IsNotEmpty())
+            {
+                ProcUtils.ProcessStart(exePath);
+                await AppManager.Instance.AppExitAsync(false);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog(_tag, ex);
             await UpdateFinishedSub(true);
         }
     }

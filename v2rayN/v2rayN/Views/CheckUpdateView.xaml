@@ -18,27 +18,58 @@
     <DockPanel Margin="{StaticResource Margin8}">
         <StackPanel
             Margin="{StaticResource Margin8}"
-            HorizontalAlignment="Right"
             DockPanel.Dock="Bottom"
-            Orientation="Horizontal">
+            Orientation="Vertical">
 
-            <TextBlock
-                Margin="{StaticResource Margin8}"
-                VerticalAlignment="Center"
-                Style="{StaticResource ToolbarTextBlock}"
-                Text="{x:Static resx:ResUI.TbSettingsEnableCheckPreReleaseUpdate}" />
-            <ToggleButton
-                x:Name="togEnableCheckPreReleaseUpdate"
-                Margin="{StaticResource Margin8}"
-                HorizontalAlignment="Left" />
+            <StackPanel Margin="0,8,0,8" Orientation="Horizontal">
+                <TextBlock
+                    Margin="{StaticResource Margin8}"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource ToolbarTextBlock}"
+                    Text="更新进度:" />
+                <TextBlock
+                    x:Name="txtProgressStatus"
+                    Margin="{StaticResource Margin8}"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource PrimaryHueMidBrush}" />
+            </StackPanel>
+            
+            <ProgressBar
+                x:Name="progressBar"
+                Height="20"
+                Margin="8,0,8,8"
+                Maximum="100"
+                Minimum="0" />
 
-            <Button
-                x:Name="btnCheckUpdate"
-                Width="100"
-                Margin="{StaticResource Margin8}"
-                Content="{x:Static resx:ResUI.menuCheckUpdate}"
-                IsDefault="True"
-                Style="{StaticResource DefButton}" />
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <TextBlock
+                    Margin="{StaticResource Margin8}"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource ToolbarTextBlock}"
+                    Text="{x:Static resx:ResUI.TbSettingsEnableCheckPreReleaseUpdate}" />
+                <ToggleButton
+                    x:Name="togEnableCheckPreReleaseUpdate"
+                    Margin="{StaticResource Margin8}"
+                    HorizontalAlignment="Left" />
+
+                <TextBlock
+                    Margin="{StaticResource Margin8}"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource ToolbarTextBlock}"
+                    Text="自动重启" />
+                <ToggleButton
+                    x:Name="togEnableAutoRestart"
+                    Margin="{StaticResource Margin8}"
+                    HorizontalAlignment="Left" />
+
+                <Button
+                    x:Name="btnCheckUpdate"
+                    Width="100"
+                    Margin="{StaticResource Margin8}"
+                    Content="{x:Static resx:ResUI.menuCheckUpdate}"
+                    IsDefault="True"
+                    Style="{StaticResource DefButton}" />
+            </StackPanel>
         </StackPanel>
 
         <StackPanel>

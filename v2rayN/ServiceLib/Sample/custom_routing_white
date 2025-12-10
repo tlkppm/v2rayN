@@ -79,6 +79,39 @@
     ]
   },
   {
+    "remarks": "绕过支付环境(支付宝/微信/银行)",
+    "outboundTag": "direct",
+    "domain": [
+      "domain:alipay.com",
+      "domain:alipayobjects.com",
+      "domain:alipaydev.com",
+      "domain:alipaydns.com",
+      "domain:antgroup.com",
+      "domain:antfin.com",
+      "domain:mybank.cn",
+      "domain:weixin.qq.com",
+      "domain:wechat.com",
+      "domain:wx.qq.com",
+      "domain:weixinbridge.com",
+      "domain:tenpay.com",
+      "domain:qpay.qq.com",
+      "domain:weiyun.com",
+      "domain:unionpay.com",
+      "domain:95516.com",
+      "domain:cloudpnr.com",
+      "domain:chinapay.com",
+      "domain:icbc.com.cn",
+      "domain:ccb.com",
+      "domain:boc.cn",
+      "domain:abchina.com",
+      "domain:bankcomm.com",
+      "domain:cmbchina.com",
+      "domain:pingan.com",
+      "domain:jd.com",
+      "domain:jdpay.com"
+    ]
+  },
+  {
     "remarks": "绕过中国IP",
     "outboundTag": "direct",
     "ip": [
