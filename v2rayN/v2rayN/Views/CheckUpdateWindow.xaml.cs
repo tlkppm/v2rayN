@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Shell;
+using System.Windows.Threading;
 using ReactiveUI;
 
 namespace v2rayN.Views;
@@ -7,6 +8,8 @@ namespace v2rayN.Views;
 public partial class CheckUpdateWindow : Window
 {
     public CheckUpdateViewModel ViewModel { get; private set; }
+    private DispatcherTimer _progressTimer;
+    private int _animatedProgress = 0;
 
     public CheckUpdateWindow()
     {
@@ -23,38 +26,79 @@ public partial class CheckUpdateWindow : Window
         btnCheckUpdateAll.Click += async (s, e) =>
         {
             btnCheckUpdateAll.IsEnabled = false;
+            StartProgressAnimation();
             await ViewModel.CheckUpdateAllCmd.Execute();
+            StopProgressAnimation();
             btnCheckUpdateAll.IsEnabled = true;
         };
 
         btnClose.Click += (s, e) => Close();
 
         ViewModel.WhenAnyValue(x => x.CurrentProgress)
+            .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(progress =>
             {
-                Dispatcher.Invoke(() =>
+                if (progress > _animatedProgress)
                 {
-                    progressBar.Value = progress;
-                    if (progress > 0 && progress < 100)
-                    {
-                        windowTaskbar.ProgressState = TaskbarItemProgressState.Normal;
-                        windowTaskbar.ProgressValue = progress / 100.0;
-                    }
-                    else
-                    {
-                        windowTaskbar.ProgressState = TaskbarItemProgressState.None;
-                    }
-                });
+                    _animatedProgress = progress;
+                }
+                UpdateProgressUI();
             });
 
         ViewModel.WhenAnyValue(x => x.ProgressStatus)
+            .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(status =>
             {
-                Dispatcher.Invoke(() =>
-                {
-                    txtProgressStatus.Text = status;
-                });
+                txtProgressStatus.Text = status ?? "";
             });
+
+        ViewModel.WhenAnyValue(x => x.IsUpdating)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(isUpdating =>
+            {
+                if (isUpdating)
+                {
+                    StartProgressAnimation();
+                }
+                else
+                {
+                    StopProgressAnimation();
+                }
+            });
+    }
+
+    private void StartProgressAnimation()
+    {
+        _animatedProgress = 0;
+        if (_progressTimer == null)
+        {
+            _progressTimer = new DispatcherTimer();
+            _progressTimer.Interval = TimeSpan.FromMilliseconds(100);
+            _progressTimer.Tick += (s, e) =>
+            {
+                if (_animatedProgress < 95 && ViewModel.IsUpdating)
+                {
+                    _animatedProgress += 1;
+                    UpdateProgressUI();
+                }
+            };
+        }
+        _progressTimer.Start();
+        windowTaskbar.ProgressState = TaskbarItemProgressState.Normal;
+    }
+
+    private void StopProgressAnimation()
+    {
+        _progressTimer?.Stop();
+        _animatedProgress = 100;
+        UpdateProgressUI();
+        windowTaskbar.ProgressState = TaskbarItemProgressState.None;
+    }
+
+    private void UpdateProgressUI()
+    {
+        progressBar.Value = _animatedProgress;
+        windowTaskbar.ProgressValue = _animatedProgress / 100.0;
     }
 
     public void StartAutoUpdate()
