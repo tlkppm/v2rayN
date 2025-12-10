@@ -1,5 +1,6 @@
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shell;
 using MaterialDesignThemes.Wpf;
 using v2rayN.Manager;
 
@@ -10,6 +11,7 @@ public partial class MainWindow
     private static Config _config;
     private CheckUpdateView? _checkUpdateView;
     private BackupAndRestoreView? _backupAndRestoreView;
+    private bool _autoUpdateTriggered = false;
 
     public MainWindow()
     {
@@ -147,6 +149,18 @@ public partial class MainWindow
              .AsObservable()
              .ObserveOn(RxApp.MainThreadScheduler)
              .Subscribe(blShow => ShowHideWindow(blShow))
+             .DisposeWith(disposables);
+
+            AppEvents.DownloadProgressChanged
+             .AsObservable()
+             .ObserveOn(RxApp.MainThreadScheduler)
+             .Subscribe(progress => UpdateTaskbarProgress(progress.progress, progress.status))
+             .DisposeWith(disposables);
+
+            AppEvents.AutoUpdateRequested
+             .AsObservable()
+             .ObserveOn(RxApp.MainThreadScheduler)
+             .Subscribe(_ => TriggerAutoUpdate())
              .DisposeWith(disposables);
         });
 
@@ -402,6 +416,27 @@ public partial class MainWindow
             ShowHideWindow(false);
         }
         RestoreUI();
+        
+        _ = CheckCoreFilesAndAutoUpdate();
+    }
+
+    private async Task CheckCoreFilesAndAutoUpdate()
+    {
+        await Task.Delay(2000);
+        
+        var xrayPath = Utils.GetBinPath("xray", ECoreType.Xray.ToString());
+        var geoSitePath = Utils.GetBinPath("geosite.dat", "");
+        var geoIpPath = Utils.GetBinPath("geoip.dat", "");
+        
+        var needUpdate = !File.Exists(Path.Combine(xrayPath, "xray.exe")) 
+                      || !File.Exists(geoSitePath) 
+                      || !File.Exists(geoIpPath);
+        
+        if (needUpdate)
+        {
+            NoticeManager.Instance.SendMessageAndEnqueue("检测到核心组件缺失，正在自动下载...");
+            AppEvents.AutoUpdateRequested.Publish();
+        }
     }
 
     private void RestoreUI()
@@ -457,6 +492,36 @@ public partial class MainWindow
         if (sender is MenuItem item)
         {
             ProcUtils.ProcessStart(item.Tag.ToString());
+        }
+    }
+
+    private void UpdateTaskbarProgress(double progress, string status)
+    {
+        if (taskbarItemInfo == null) return;
+
+        if (progress <= 0 || progress >= 1)
+        {
+            taskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+            taskbarItemInfo.ProgressValue = 0;
+        }
+        else
+        {
+            taskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+            taskbarItemInfo.ProgressValue = progress;
+        }
+    }
+
+    private void TriggerAutoUpdate()
+    {
+        if (_autoUpdateTriggered) return;
+        _autoUpdateTriggered = true;
+
+        _checkUpdateView ??= new CheckUpdateView();
+        DialogHost.Show(_checkUpdateView, "RootDialog");
+        
+        if (_checkUpdateView.ViewModel != null)
+        {
+            _checkUpdateView.ViewModel.CheckUpdateCmd.Execute().Subscribe();
         }
     }
 

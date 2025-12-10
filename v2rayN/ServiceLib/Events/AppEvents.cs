@@ -27,4 +27,7 @@ public static class AppEvents
     public static readonly EventChannel<Unit> TestServerRequested = new();
     public static readonly EventChannel<Unit> InboundDisplayRequested = new();
     public static readonly EventChannel<ESysProxyType> SysProxyChangeRequested = new();
+
+    public static readonly EventChannel<(double progress, string status)> DownloadProgressChanged = new();
+    public static readonly EventChannel<Unit> AutoUpdateRequested = new();
 }

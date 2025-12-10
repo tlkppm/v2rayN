@@ -113,6 +113,7 @@ public class CheckUpdateViewModel : MyReactiveObject
             }
 
             ProgressStatus = $"正在检查更新: {item.CoreType}";
+            AppEvents.DownloadProgressChanged.Publish((CurrentProgress / 100.0, ProgressStatus));
             await UpdateView(item.CoreType, "...");
             if (item.CoreType == _geo)
             {
@@ -143,8 +144,10 @@ public class CheckUpdateViewModel : MyReactiveObject
 
         ProgressStatus = "更新完成";
         CurrentProgress = 100;
+        AppEvents.DownloadProgressChanged.Publish((1.0, ProgressStatus));
         await UpdateFinished();
         IsUpdating = false;
+        AppEvents.DownloadProgressChanged.Publish((0, ""));
     }
 
     private void UpdatedPlusPlus(string coreType, string fileName)
