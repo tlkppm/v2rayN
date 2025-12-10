@@ -107,6 +107,15 @@ public partial class CheckUpdateWindow : Window
         ViewModel.CheckUpdateAllCmd.Execute().Subscribe();
     }
 
+    public void StartAutoUpdateForComponents(List<string> components)
+    {
+        foreach (var item in ViewModel.CheckUpdateModels)
+        {
+            item.IsSelected = components.Contains(item.CoreType);
+        }
+        ViewModel.CheckUpdateCmd.Execute().Subscribe();
+    }
+
     private async Task<bool> UpdateViewHandler(EViewAction action, object? obj)
     {
         return await Task.FromResult(true);

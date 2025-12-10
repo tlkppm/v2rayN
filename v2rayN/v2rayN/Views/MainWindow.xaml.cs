@@ -425,18 +425,39 @@ public partial class MainWindow
     {
         await Task.Delay(2000);
         
-        var xrayPath = Utils.GetBinPath("xray", ECoreType.Xray.ToString());
-        var geoSitePath = Utils.GetBinPath("geosite.dat", "");
-        var geoIpPath = Utils.GetBinPath("geoip.dat", "");
+        var xrayPath = Utils.GetBinPath("xray.exe", ECoreType.Xray.ToString());
+        var geoSitePath = Utils.GetBinPath("geosite.dat");
+        var geoIpPath = Utils.GetBinPath("geoip.dat");
         
-        var needUpdate = !File.Exists(Path.Combine(xrayPath, "xray.exe")) 
-                      || !File.Exists(geoSitePath) 
-                      || !File.Exists(geoIpPath);
+        var missingComponents = new List<string>();
         
-        if (needUpdate)
+        if (!File.Exists(xrayPath))
+            missingComponents.Add("Xray");
+        if (!File.Exists(geoSitePath) || !File.Exists(geoIpPath))
+            missingComponents.Add("GeoFiles");
+        
+        if (missingComponents.Count > 0)
         {
-            NoticeManager.Instance.SendMessageAndEnqueue("检测到核心组件缺失，正在自动下载...");
-            AppEvents.AutoUpdateRequested.Publish();
+            NoticeManager.Instance.SendMessageAndEnqueue($"检测到核心组件缺失: {string.Join(", ", missingComponents)}，正在自动下载...");
+            ShowAutoUpdateWindow(missingComponents);
+        }
+    }
+
+    private void ShowAutoUpdateWindow(List<string> components)
+    {
+        if (_autoUpdateTriggered) return;
+        _autoUpdateTriggered = true;
+
+        if (_checkUpdateWindow == null || !_checkUpdateWindow.IsVisible)
+        {
+            _checkUpdateWindow = new CheckUpdateWindow();
+            _checkUpdateWindow.Closed += (s, e) => _checkUpdateWindow = null;
+            _checkUpdateWindow.Show();
+            _checkUpdateWindow.StartAutoUpdateForComponents(components);
+        }
+        else
+        {
+            _checkUpdateWindow.Activate();
         }
     }
 
@@ -514,20 +535,7 @@ public partial class MainWindow
 
     private void TriggerAutoUpdate()
     {
-        if (_autoUpdateTriggered) return;
-        _autoUpdateTriggered = true;
-
-        if (_checkUpdateWindow == null || !_checkUpdateWindow.IsVisible)
-        {
-            _checkUpdateWindow = new CheckUpdateWindow();
-            _checkUpdateWindow.Closed += (s, e) => _checkUpdateWindow = null;
-            _checkUpdateWindow.Show();
-            _checkUpdateWindow.StartAutoUpdate();
-        }
-        else
-        {
-            _checkUpdateWindow.Activate();
-        }
+        ShowAutoUpdateWindow(new List<string> { "Xray", "GeoFiles" });
     }
 
     #endregion UI
